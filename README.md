@@ -93,26 +93,19 @@ La app abrirá en tu navegador (por defecto `http://localhost:8501`).
      $$
      Q = \frac{\text{votos válidos de partidos con derecho}}{Curules RP}
      $$
-   * Asignación inicial por circunscripción y partido (si implementado por región) o a nivel nacional y luego distribución:
-
-     $$
-     \text{curules} = \left\lfloor \frac{\text{votos}}{Q} \right\rfloor
-     $$
 
 3. **Restos mayores**
 
-   * Se calculan **restos** = votos − curules·Q.
-   * Se reparten curules **restantes** en orden de restos, respetando **máximo 40 por circunscripción**.
+   * Se reparten curules **restantes** en orden de restos mayores, respetando **máximo 40 por circunscripción**.
    * Si una circunscripción llega a 40, se salta a la siguiente mejor opción del mismo partido.
 
-4. **Tope de sobrerrepresentación (+8%)** (si activo)
+4. **Tope de sobrerrepresentación (+8%)**
 
    * Se calcula % curules totales por partido (MR + RP) vs % votos nacionales.
    * Si un partido excede **+8%**, se ajusta reduciendo RP y redistribuyendo sin romper:
-
      * el tope,
      * el límite de **40 por circunscripción**,
-     * y el total de 200 RP.
+     * y el total de curules RP.
 
 ---
 
@@ -131,60 +124,14 @@ La app abrirá en tu navegador (por defecto `http://localhost:8501`).
 
 ## 🧰 Uso en la interfaz
 
-1. **Cargar preset** (2018/2021/2024) o editar manualmente los campos de votos por región.
+1. **Cargar preset** (2024) o editar manualmente los campos de votos por región.
 2. **Ingresar MR** por partido.
-3. (Opcional) Activar/Desactivar tope de sobrerrepresentación.
-4. **Ejecutar**: la app mostrará tablas y (si habilitado) gráficos de verificación.
-5. **Exportar**: puedes añadir un botón para descargar CSVs de resultados (opcional).
-
----
-
-## ✅ Reglas de negocio verificadas
-
-* Umbral nacional del **3%** aplicado antes del reparto.
-* **200** curules RP en total.
-* **Máximo 40** RP por circunscripción (se salta cuando se alcanza).
-* **Tope +8%** (si se enciende la opción).
-* Sumatoria **MR + RP = 500** curules (consistencia global).
-
----
-
-## 🧪 Pruebas rápidas
-
-* Caso base con partidos que superan el 3% y distribución pareja.
-* Caso con un partido sobrerrepresentado para verificar el tope.
-* Caso límite donde varias circunscripciones alcanzan 40 RP.
-
-> Puedes integrar pruebas con `pytest` para la lógica pura (cálculo de Q, restos, asignación incremental, tope).
-
----
-
-## 🔧 Notas de implementación
-
-* El algoritmo de reparto y el tope están desacoplados de la UI (si separaste en `core/`), lo que permite:
-
-  * pruebas unitarias,
-  * reutilización en otros frontends,
-  * y escenarios con datos reales (CSV).
-
-* Si vas a cargar **CSV** de votos:
-
-  * Limpia encabezados, normaliza nombres de partidos/regiones,
-  * verifica totales y NaNs antes del reparto.
-
----
-
-## 📄 Licencia
-
-MIT (o la que prefieras).
+4. **Ejecutar**: la app mostrará tablas y gráficos de verificación.
+5. **Exportar**: puedes añadir un botón para descargar CSVs de resultados.
 
 ---
 
 ## 👤 Autor
 
-* Jhan Luis Ramírez Suárez
-* (Agrega correo o sitio si quieres)
-
----
-
-¿Quieres que lo adapte a la estructura exacta de tu repo (nombres de archivos/clases) o que añada un botón de **descarga de resultados** en CSV desde la app?
+* Jhan Luis Ramírez Suárez para SNE.
+* luis.ramirez@cen.pan.org.mx
