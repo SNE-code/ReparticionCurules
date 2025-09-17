@@ -40,7 +40,7 @@ pip install streamlit pandas numpy matplotlib
 ## ▶️ Cómo ejecutar
 
 ```bash
-streamlit run app.py
+streamlit run RepartoCurules.py
 ```
 Puedes cambiar el nombre al archivo Python, en ese caso, modificalo la orden de ejecución.
 
