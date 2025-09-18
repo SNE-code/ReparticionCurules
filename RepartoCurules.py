@@ -164,7 +164,7 @@ if pagina == "Cálculo de sobrerrepresentación":
         st.subheader("Cargar datos predefinidos")
         st.markdown("Selecciona un preset para cargar votos y curules de Mayoría Relativa.")
         preset_choice = st.selectbox("Elegir año", [2024], index=0, key="preset_choice_main")
-        load = st.button("Cargar preset", type="primary", use_container_width=True)
+        load = st.button("Cargar datos predefinidos", type="primary", use_container_width=True)
 
     if "seats_mr" not in st.session_state:
         seats_mr = 300
@@ -302,7 +302,7 @@ if pagina == "Cálculo de sobrerrepresentación":
                 <span style="font-size:1.1em;letter-spacing:0.5px;">⚠️ <b>Alerta de sobrerepresentación</b></span>
                 <br>
                 <span style="font-size:1.05em;">
-                Algunos partidos válidos exceden el tope de sobrerrepresentación.<br>
+                Algunos partidos exceden el tope de sobrerrepresentación.<br>
                 <ul style="margin:0.5em 0 0 1.2em;">
                 {''.join(
                     f"<li><b>{r['Partido']}</b>: Total = {r['Total']} vs Máximo = {r['Máximo permitido']} → <b>Excede por {r['Total'] - r['Máximo permitido']} curules</b>.</li>"
@@ -790,7 +790,7 @@ elif pagina == "Reparto de curules por RP":
             for circ in votos_por_circun
         }
         curules_remanente = {
-            circ: 40 - sum(curules_por_circun_sobrerep_entero[p][circ] for p in sobrerepresentados)
+            circ: curules_por_circ - sum(curules_por_circun_sobrerep_entero[p][circ] for p in sobrerepresentados)
             for circ in (next(iter(curules_por_circun_sobrerep_entero.values())).keys()
                         if len(curules_por_circun_sobrerep_entero) > 0 else votos_por_circun.keys())
         }
@@ -866,7 +866,7 @@ elif pagina == "Reparto de curules por RP":
                 for circun in orden_circuns:
                     if extras == 0:
                         break
-                    if curules_totales_por_circun[circun] < 40:
+                    if curules_totales_por_circun[circun] < curules_por_circ:
                         df_curules_por_circun.loc[partido, circun] += 1
                         curules_totales_por_circun[circun] += 1
                         extras -= 1
