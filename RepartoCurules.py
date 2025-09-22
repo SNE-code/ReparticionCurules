@@ -173,7 +173,7 @@ if pagina == "Cálculo de sobrerrepresentación":
         st.subheader("Parámetros globales")
         st.markdown("El cálculo se hará con base en 300 curules de MR más el parámetro elegido.")
         #seats_mr = st.number_input("Curules de MR", min_value=0, max_value=500, value=300, step=1, help="Mayoría Relativa")
-        seats_rp = st.number_input("Curules de RP", min_value=1, max_value=500, value=200, step=1, help="Representación Proporcional")
+        seats_rp = st.number_input("Curules de RP", min_value=100, max_value=200, value=200, step=1, help="Representación Proporcional")
         # umbral = st.number_input("Umbral legal (p.ej. 0.03 = 3%)", min_value=0.0, max_value=1.0, value=0.03, step=0.01, format="%.2f")
         # bonus_cap = st.number_input("Tope de sobrerrepresentación (extra)", min_value=0.0, max_value=1.0, value=0.08, step=0.01, format="%.2f",
         #                             help="Máximo permitido = porcentaje válido + este extra, sobre el total de curules MR+RP.")
@@ -258,7 +258,6 @@ if pagina == "Cálculo de sobrerrepresentación":
                             for k, v in partidos_validos.items()}
         porcentaje_maximo = {k: porcentaje_valido.get(k, 0.0) + bonus_cap for k in curules_totales}
         curules_maximos = {k: int((porcentaje_maximo.get(k, 0.0)) * total_seats) for k in curules_totales}
-
         # Resultados (orden fijo)
         partidos_out = [p for p in PARTY_ORDER if p in curules_totales] + [p for p in curules_totales if p not in PARTY_ORDER]
         df_res = pd.DataFrame({
@@ -352,7 +351,6 @@ if pagina == "Cálculo de sobrerrepresentación":
         # ax.set_title(title)
         # plt.xticks(rotation=45)
         # st.pyplot(fig)
-
 
     # # Colores sugeridos (ajústalos si quieres)
 
@@ -528,7 +526,7 @@ elif pagina == "Reparto de curules por RP":
     with colB:
         st.subheader("Parámetros")
         st.markdown("El cálculo se hará con base en 300 curules de MR más el parámetro elegido.")
-        seats_rp = st.number_input("Curules de RP", min_value=1, max_value=200, value=200, step=1, help="Representación Proporcional")
+        seats_rp = st.number_input("Curules de RP", min_value=100, max_value=200, value=200, step=1, help="Representación Proporcional")
         st.markdown("---")
         st.subheader("Votos no válidos / a eliminar")
         if "nulos" not in st.session_state: st.session_state["nulos"] = 0
@@ -974,6 +972,7 @@ elif pagina == "Reparto de curules por RP":
             curules_rp_val = df_curules_por_circun.loc[partido].sum() if partido in df_curules_por_circun.index else 0
             curules_total = curules_mr_val + curules_rp_val
             curules_max = curules_maximas.get(partido, 0)
+            porcentaje_camara = curules_total / (300 + curules) if (300 + curules) > 0 else 0
             resumen_partidos.append({
                 "Partido": partido,
                 "Votos": votos,
@@ -981,38 +980,31 @@ elif pagina == "Reparto de curules por RP":
                 "Curules MR": curules_mr_val,
                 "Curules RP": curules_rp_val,
                 "Curules Totales": curules_total,
-                "Curules Máximas": curules_max if curules_max else "N/A"
+                "Curules Máximas": curules_max if curules_max else "N/A",
+                "Porcentaje Válida": porcentaje,
+                "Porcentaje Cámara": porcentaje_camara * 100,
             })
         
 
         df_resumen = pd.DataFrame(resumen_partidos)
         df_resumen = sort_parties_df(df_resumen)
         
-        cols = st.columns(6)
-        with cols[0]:
-            st.markdown("**Partido**")
-            for p in df_resumen["Partido"]:
-                st.markdown(f"{p}")
-        with cols[1]:
-            st.markdown("**Votos**")
-            for v in df_resumen["Votos"]:
-                st.markdown(f"{v:,}")
-        with cols[2]:
-            st.markdown("**Curules MR**")
-            for mr in df_resumen["Curules MR"]:
-                st.markdown(f"{mr}")
-        with cols[3]:
-            st.markdown("**Curules RP**")
-            for rp in df_resumen["Curules RP"]:
-                st.markdown(f"{rp}")
-        with cols[4]:
-            st.markdown("**Curules Totales**")
-            for total in df_resumen["Curules Totales"]:
-                st.markdown(f"{total}")
-        with cols[5]:
-            st.markdown("**Curules Máximas**")
-            for max in df_resumen["Curules Máximas"]:
-                st.markdown(f"{max}")
+        # Mostrar resumen por partido como tabla (DataFrame)
+        st.dataframe(
+            df_resumen[[
+            "Partido", "Votos", "Curules MR", "Curules RP", "Curules Totales", "Curules Máximas", "Porcentaje Cámara"
+            ]].rename(columns={
+            "Partido": "Partido",
+            "Votos": "Votos",
+            "Curules MR": "Curules MR",
+            "Curules RP": "Curules RP",
+            "Curules Totales": "Curules Totales",
+            "Curules Máximas": "Curules Máximas",
+            "Porcentaje Cámara": "% Cámara"
+            }),
+            use_container_width=True,
+            hide_index=True
+        )
 
 
 
