@@ -696,7 +696,7 @@ elif pagina == "Reparto de curules por RP":
         # 7. Cociente natural
         cociente_natural = votacion_nacional_emitida / curules
 
-        # Asignación por Hare
+        # Asignación
         asignacion_curules = {p: int(v // cociente_natural) for p, v in votos_partido_con_derecho.items()}
         curules_asignadas = sum(asignacion_curules.values())
         curules_restantes = curules - curules_asignadas
